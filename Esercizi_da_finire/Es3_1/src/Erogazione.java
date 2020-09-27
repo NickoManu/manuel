@@ -68,7 +68,35 @@ public class Erogazione {
 		Distributore d3= new Distributore();
 		Distributore d4= new Distributore();
 		
+		//inizializzo 4 bevande predefinite da inserire nel distributore		
+		Bevanda b1 = new Bevanda("B1", "Acqua", 0.20);
+		Bevanda b2 = new Bevanda("B2", "Thè", 0.40);
+		Bevanda b3 = new Bevanda("B3", "Succo d'Arancia", 0.60);
+		Bevanda b4 = new Bevanda("B4", "Cola", 0.50);
+		
+		bevande.add(b1);
+		bevande.add(b2);
+		bevande.add(b3);
+		bevande.add(b4);
+		
 		Distributore [] distributore =  {d1,d2,d3,d4};
+		
+		//riempio il distributore
+		d1.setColonna(1);
+		d1.setBevanda(b1);
+		d1.setNumeroLattine(20);
+		
+		d2.setColonna(2);
+		d2.setBevanda(b2);
+		d2.setNumeroLattine(15);
+		
+		d3.setColonna(3);
+		d3.setBevanda(b3);
+		d3.setNumeroLattine(20);
+		
+		d4.setColonna(4);
+		d4.setBevanda(b4);
+		d4.setNumeroLattine(25);
 		
 		String s, codice, nome;
 		int scelta=0,sceltaSottomenu=0, codiceT=0;
@@ -82,9 +110,10 @@ public class Erogazione {
 			System.out.println("2 - Gestione Tessere");
 			System.out.println("3 - Gestione Distributore");
 			System.out.println("4 - Erogazione");
+			System.out.println("5 - Help");
 			System.out.println("0 - Termina");
 			scelta=inserisciIntero();
-			if(scelta>=0 && scelta<=4) {
+			if(scelta>=0 && scelta<=5) {
 				
 				switch(scelta) {
 				
@@ -342,10 +371,164 @@ public class Erogazione {
 							}while(sceltaSottomenu!=0);//fine sottomenu gestione tessere
 							break;
 							
-					case 3: System.out.println("GESTIONE DISTRIBUTORE");
+					case 3: do {//menu gestione distributore
+							System.out.println("GESTIONE DISTRIBUTORE");
+							System.out.println("1 - Aggiorna Colonna Distributore");
+							System.out.println("2 - Visualizza Contenuto Distributore");
+							System.out.println("3 - Visualizza Lattine Disponibili");
+							System.out.println("0 - Indietro");
+							sceltaSottomenu=inserisciIntero();
+							if(sceltaSottomenu>=0 && sceltaSottomenu<=3) {
+								switch(sceltaSottomenu) {
+								case 1:	System.out.println("Aggiornamento colonna Distributore");										
+										int colonna=0;
+										do {
+											System.out.println("Inserisci numero colonna (da 1 a 4)");
+											colonna=inserisciIntero();
+										if(colonna<1 || colonna>4)
+											System.out.println("Errore: inserire colonna da 1 a 4");
+										}while(colonna<1 || colonna>4);									
+										
+										System.out.println("Le bevande disponibili sono: ");
+										if(bevande.isEmpty()) {
+											System.out.println("La lista delle bevande e' vuota");
+										}
+										else{
+											Bevanda be = new Bevanda();
+											for(int i=0; i<bevande.size(); i++) {
+												be = bevande.get(i);
+												System.out.println("Codice: " + be.getCodice() +" Nome: " + be.getName() + " Prezzo: " + be.getPrice());
+												
+											}
+										}										
+										
+										Bevanda b = new Bevanda();
+										String codiceC="";
+										System.out.println("Inserire il codice della bevanda che vuoi inserire nella colonna");
+										System.out.println("se la bevanda che vorresti inserire non è presente inserisci un valore qualsiasi");
+										codice=kb.next();										
+										if(bevande.isEmpty()) {
+											codiceC="nonpresente";											
+										}
+										else {												
+												for(int i=0; i<bevande.size(); i++) {
+														b = bevande.get(i);																												
+														if((b.getCodice()).equalsIgnoreCase(codice)) {
+															codiceC="presente";
+															System.out.println("codice accettato");
+															break;
+														}
+														else															
+															codiceC="nonpresente";														
+												}
+											}
+										if(codiceC.equals("nonpresente"))								
+											System.out.println("La bevanda non è presente");
+										else {
+												System.out.println("Bevanda scelta: " + b.getNome());
+												System.out.println("Quante lattine vuoi inserire?");
+												int numeroLattine=0;
+												do {
+													System.out.println("Inserire il numero di lattine");
+													numeroLattine=inserisciIntero();
+													if(numeroLattine<=0)
+														System.out.println("Errore: il numero di lattine deve essere un intero superiore a 0");
+												}while(numeroLattine<=0);												
+												distributore[colonna-1]=new Distributore(colonna, b, numeroLattine);
+												System.out.println("Bevanda inserita: " + b.getNome());
+											}
+										break;
+										
+								case 2: System.out.println("Contenuto Distributore:");
+										for(int i=0; i<distributore.length; i++) {
+											System.out.println(distributore[i].toString());
+										}
+										break;
+										
+								case 3: System.out.println("Inserire il codice della bibita");									
+										codice=kb.next();
+										int somma=0;
+										for(int i=0; i<distributore.length;i++) {
+											if(distributore[i].getBevanda().getCodice().equalsIgnoreCase(codice)) {
+												somma = somma + distributore[i].lattineDisponibili(codice);
+											}
+										}
+										System.out.println("Il numero di lattine e': " + somma);
+										break;
+										
+								default: System.out.println("Menu Principale");
+								}
+							}else
+								System.out.println("Errore: inserire una delle scelte disponibili");
+							
+							}while(sceltaSottomenu!=0);//fine sottomenu gestione distributore
 							break;
 					
 					case 4: System.out.println("EROGAZIONE");
+							System.out.println("Le bevande disponibili sono:");
+							for(int i=0; i<distributore.length;i++) {
+								System.out.println(distributore[i].toString());
+							}
+							System.out.println("Inserire il codice della bibita che desideri");
+							codice=kb.next();
+							controllo=false;
+							for(int i=0; i<distributore.length;i++) {
+								if(distributore[i].getBevanda().getCodice().equalsIgnoreCase(codice)) {
+									controllo=true;
+									break;
+								}else
+									controllo=false;
+							}
+							if(controllo) {
+								System.out.println("Inserire il codice della tua tessera: ");
+								codiceT=inserisciIntero();
+								controllo=false;
+								Tessera te= new Tessera();
+								for(int i=0; i<tessere.size(); i++) {
+									te=tessere.get(i);
+									if(te.getCodice()==codiceT) {
+										controllo=true;
+										credito=te.getCredito();
+										break;
+									}else
+										controllo=false;
+								}
+								boolean controlloL=false;
+								if(controllo) {
+									controllo=false;
+									for(int i=0; i<distributore.length; i++) {
+										if(distributore[i].getBevanda().getCodice().equalsIgnoreCase(codice)) {
+											if(distributore[i].getNumeroLattine()>0) {
+												controlloL=true;
+												if(distributore[i].getBevanda().getPrezzo()<=credito) {
+													distributore[i].setNumeroLattine((distributore[i].getNumeroLattine())-1);
+													te.setCredito((te.getCredito())-(distributore[i].getBevanda().getPrezzo()));
+													System.out.println("Erogazione avvenuta con successo");
+													controllo=true;
+													break;
+												}else {
+													System.out.println("CreditoInsufficiente");
+													controllo=false;
+													break;
+												}
+											}else
+												controlloL=false;											
+										}
+									}
+									if(controlloL==false)
+										System.out.println("BevandaEsaurita");
+									
+								}else
+									System.out.println("la tessera non e' presente");
+							}else
+								System.out.println("Codice errato o  bevanda non presente");
+							break;
+					
+					case 5: System.out.println("HELP");
+							System.out.println("Come faccio a prendere una bibita?");
+							System.out.println("Per poter prendere una bibita è necessario avere una tessera");
+							System.out.println("se la tua tessera non è presente allora devi prima inserirla");
+							System.out.println("Per inserire una nuova tessera vai nel menu gestione tessere e inserisci una nuova tessera");
 							break;
 					default: System.out.println("Arrivederci");
 				

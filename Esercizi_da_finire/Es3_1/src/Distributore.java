@@ -49,7 +49,14 @@ public class Distributore {
 	}
 	
 	public int lattineDisponibili(String codice) {
+		if(codice.equalsIgnoreCase(bevanda.getCodice()))
 		return this.getNumeroLattine();
+		else
+			return -1;
+	}
+	
+	public String toString() {
+		return "Colonna: " + this.getColonna() + " " + this.bevanda.toString() + " Numero Lattine: " + this.getNumeroLattine();
 	}
 
 }
